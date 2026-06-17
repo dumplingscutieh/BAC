@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Balagtas Animal Grooming Center | Clinic Center </title>
+    <style>
+      :root {
+        --bg: #f4f9fb;
+        --card: rgba(255, 255, 255, 0.94);
+        --text: #12293d;
+        --muted: #556f85;
+        --muted2: #7289a2;
+        --border: #cdd8e6;
+        --shadow: 0 16px 38px rgba(18, 41, 61, 0.16);
+        --primary: #165a84;
+        --primary2: #1f73a3;
+        --accent: #dae9f4;
+        --radius: 18px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        position: relative;
+        margin: 0;
+        font-family: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.20)),
+          url("https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=1400&q=80")
+            center/cover no-repeat;
+        background-attachment: fixed;
+        background-blend-mode: normal;
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px 16px;
+        overflow: hidden;
+      }
+      body::before {
+        content: "";
+        position: absolute;
+        top: -120px;
+        left: -120px;
+        width: 320px;
+        height: 320px;
+        background: radial-gradient(circle, rgba(31, 111, 160, 0.18) 0%, transparent 60%);
+        filter: blur(18px);
+        pointer-events: none;
+      }
+      body::after {
+        content: "";
+        position: absolute;
+        bottom: -100px;
+        right: -100px;
+        width: 260px;
+        height: 260px;
+        background: radial-gradient(circle, rgba(37, 153, 177, 0.14) 0%, transparent 55%);
+        filter: blur(20px);
+        pointer-events: none;
+      }
+
+      .wrap {
+        width: min(540px, 100%);
+      }
+
+      .brand {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+
+      .logo {
+        width: 62px;
+        height: 62px;
+        border-radius: 18px;
+        background: #fff url("logo.png") center/contain no-repeat;
+        border: 1px solid rgba(31, 109, 152, 0.16);
+        box-shadow: 0 14px 28px rgba(35, 96, 143, 0.22);
+      }
+      .logo::before {
+        display: none;
+      }
+      .logo span {
+        display: none;
+      }
+
+      .brand h1 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+      }
+
+      .brand p {
+        margin: 5px 0 0;
+        font-size: 13px;
+        color: var(--muted2);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .animal-strip {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 10px;
+        font-size: 13px;
+        color: var(--primary2);
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .animal-strip span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .role-card .icon {
+        width: 42px;
+        height: 42px;
+        display: grid;
+        place-items: center;
+        border-radius: 14px;
+        background: rgba(37, 118, 162, 0.10);
+        color: var(--primary);
+        font-size: 15px;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+      }
+
+      .card {
+        background: var(--card);
+        backdrop-filter: blur(22px);
+        border: 1px solid rgba(31, 109, 152, 0.12);
+        border-radius: 26px;
+        box-shadow: 0 24px 60px rgba(30, 75, 115, 0.12);
+        padding: 38px 36px;
+        max-height: calc(100vh - 56px);
+        overflow: auto;
+      }
+
+      .welcome {
+        text-align: center;
+        margin-bottom: 24px;
+      }
+
+      .welcome h2 {
+        margin: 0;
+        font-size: 30px;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+
+      .welcome p {
+        margin-top: 10px;
+        color: var(--muted2);
+        font-size: 14px;
+        line-height: 1.7;
+        max-width: 420px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .section-heading {
+        margin-bottom: 22px;
+      }
+
+      .section-heading h3 {
+        margin: 0 0 6px;
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--text);
+      }
+
+      .section-heading p {
+        margin: 0;
+        color: var(--muted2);
+        font-size: 13px;
+        line-height: 1.7;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 8px;
+        padding: 6px;
+        background: rgba(221, 235, 249, 0.75);
+        border-radius: 16px;
+        margin-bottom: 26px;
+        border: 1px solid rgba(31, 109, 152, 0.12);
+      }
+
+      .tabs button {
+        flex: 1;
+        border: none;
+        background: transparent;
+        padding: 14px 14px;
+        border-radius: 14px;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--muted);
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        transition: all 0.2s ease;
+      }
+
+      .tabs button[aria-selected="true"] {
+        background: #fff;
+        color: var(--primary2);
+        box-shadow: 0 10px 22px rgba(31, 109, 152, 0.11);
+      }
+
+      .panel {
+        display: none;
+      }
+
+      .panel.active {
+        display: block;
+      }
+
+      label,
+      .label {
+        display: block;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--muted);
+        margin-bottom: 7px;
+      }
+
+      .field {
+        margin-bottom: 18px;
+      }
+      @media (max-height: 760px) {
+        body {
+          align-items: flex-start;
+          padding-top: 30px;
+          padding-bottom: 30px;
+        }
+      }
+      input[type="text"],
+      input[type="email"],
+      input[type="password"] {
+        width: 100%;
+        padding: 13px 14px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: #fff;
+        font-size: 14px;
+        color: var(--text);
+        outline: none;
+        transition: all 0.2s ease;
+      }
+
+      input:focus {
+        border-color: rgba(31, 109, 152, 0.35);
+        box-shadow: 0 0 0 4px rgba(37, 118, 162, 0.12);
+      }
+
+      .roles {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(120px, 1fr));
+        gap: 14px;
+        margin-top: 8px;
+      }
+
+.role {
+  display: block;
+  width: 100%;
+  cursor: pointer;
+}
+
+.role input {
+  display: none;
+}
+
+.role-card {
+        width: 100%;
+        min-height: 96px;
+        border: 1px solid rgba(31, 109, 152, 0.12);
+        border-radius: 18px;
+        padding: 20px 14px;
+        background: #fff;
+        text-align: center;
+        display: grid;
+        place-items: center;
+        transition: all 0.22s ease;
+        user-select: none;
+      }
+
+.role-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(31, 109, 152, 0.24);
+  background: rgba(237, 244, 255, 0.9);
+  box-shadow: 0 10px 24px rgba(31, 109, 152, 0.08);
+}
+
+.role-card .t {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.role input:checked + .role-card {
+  border-color: var(--primary);
+  background: rgba(223, 238, 255, 0.95);
+  box-shadow: 0 12px 28px rgba(31, 109, 152, 0.14);
+}
+
+      .submit {
+        width: 100%;
+        margin-top: 18px;
+        padding: 16px 18px;
+        border: none;
+        border-radius: 999px;
+        background: linear-gradient(135deg, var(--primary), var(--primary2));
+        color: #fff;
+        font-size: 16px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        cursor: pointer;
+        box-shadow: 0 18px 35px rgba(31, 109, 152, 0.22);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        min-height: 52px;
+      }
+
+      .submit:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.03);
+      }
+
+      .submit:active {
+        transform: translateY(1px);
+      }
+
+      .hint {
+        margin-top: 24px;
+        text-align: center;
+        font-size: 13px;
+        color: var(--muted2);
+        line-height: 1.8;
+      }
+
+      .hint a {
+        color: var(--primary2);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .hint a:hover {
+        text-decoration: underline;
+      }
+
+      .error {
+        display: none;
+        margin-bottom: 16px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: #fff1f2;
+        border: 1px solid #fecdd3;
+        color: #be123c;
+        font-size: 13px;
+      }
+
+      .error.show {
+        display: block;
+      }
+
+      @media (max-width: 520px) {
+        .card {
+          padding: 24px 20px;
+        }
+
+        .roles {
+          grid-template-columns: 1fr;
+        }
+
+        .brand {
+          flex-direction: column;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"><span>🐾</span></div>
+        <div>
+          <h1>Balagtas Animal Grooming Center</h1>
+          <p>Enterprise Grooming & Veterinary System</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="welcome">
+          <h2>Welcome to Balagtas Animal Grooming Center</h2>
+          <p>Secure access for veterinary grooming, patient care, appointment management, and pet wellness operations.</p>
+        </div>
+        <div class="tabs" role="tablist" aria-label="Authentication mode">
+          <button type="button" id="tab-login" role="tab" aria-selected="true" aria-controls="panel-login">
+            Log In
+          </button>
+          <button type="button" id="tab-signup" role="tab" aria-selected="false" aria-controls="panel-signup">
+            Sign Up
+          </button>
+        </div>
+
+        <div id="error" class="error" role="alert"></div>
+
+        <!-- Login -->
+        <form id="panel-login" class="panel active" role="tabpanel" aria-labelledby="tab-login" novalidate>
+          <div class="section-heading">
+            <h3>Welcome Back</h3>
+            <p>Log In To Continue Managing Appointments, Inventory, Patient Records, And Clinic Operations.</p>
+          </div>
+          <div class="field">
+            <span class="role-label label">I Am Signing In As</span>
+            <div class="roles" role="radiogroup" aria-label="Account type">
+              <label class="role">
+                <input type="radio" name="role_login" value="admin" required />
+                <span class="role-card">
+                  <div class="icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 2L5 5v6c0 5.5 3.8 10.7 7 11 3.2-.3 7-5.5 7-11V5l-7-3z" />
+                      <path d="M9 12l2 2 4-4" />
+                    </svg>
+                  </div>
+                  <div class="t">Admin</div>
+                </span>
+              </label>
+              <label class="role">
+                <input type="radio" name="role_login" value="staff" required />
+                <span class="role-card">
+                  <div class="icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="8" y="4" width="8" height="4" rx="1" />
+                      <path d="M6 8h12v11a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V8z" />
+                      <path d="M9 12h6" />
+                    </svg>
+                  </div>
+                  <div class="t">Staff</div>
+                </span>
+              </label>
+            </div>
+          </div>
+          <div class="field">
+            <label for="login-email">Email</label>
+            <input id="login-email" type="email" name="email" autocomplete="username" placeholder="" />
+          </div>
+          <div class="field">
+            <label for="login-password">Password</label>
+            <input
+              id="login-password"
+              type="password"
+              name="password"
+              autocomplete="current-password"
+              placeholder=""
+            />
+          </div>
+          <button type="submit" class="submit">Sign In</button>
+        </form>
+
+        <!-- Sign up -->
+        <form id="panel-signup" class="panel" role="tabpanel" aria-labelledby="tab-signup" hidden novalidate>
+          <div class="section-heading">
+            <h3>Sign Up For Access</h3>
+            <p>Register A Clinic Administrator Or Staff Account To Manage Appointments, Inventory, And Medical Records.</p>
+          </div>
+          <div class="field">
+            <span class="role-label label">I Am Registering As</span>
+            <div class="roles" role="radiogroup" aria-label="Account type">
+              <label class="role">
+                <input type="radio" name="role_signup" value="admin" required />
+                <span class="role-card">
+                  <div class="icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 2L5 5v6c0 5.5 3.8 10.7 7 11 3.2-.3 7-5.5 7-11V5l-7-3z" />
+                      <path d="M9 12l2 2 4-4" />
+                    </svg>
+                  </div>
+                  <div class="t">Admin</div>
+                </span>
+              </label>
+              <label class="role">
+                <input type="radio" name="role_signup" value="staff" required />
+                <span class="role-card">
+                  <div class="icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="8" y="4" width="8" height="4" rx="1" />
+                      <path d="M6 8h12v11a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V8z" />
+                      <path d="M9 12h6" />
+                    </svg>
+                  </div>
+                  <div class="t">Staff</div>
+                </span>
+              </label>
+            </div>
+          </div>
+          <div class="field">
+            <label for="signup-name">Full Name</label>
+            <input id="signup-name" type="text" name="name" autocomplete="name" placeholder="Enter Full Name"/>
+          </div>
+          <div class="field">
+            <label for="signup-email">Email</label>
+            <input id="signup-email" type="email" name="email" autocomplete="email" placeholder="Enter Email" />
+          </div>
+          <div class="field">
+            <label for="signup-password">Password</label>
+            <input
+              id="signup-password"
+              type="password"
+              name="password"
+              autocomplete="new-password"
+              placeholder="At least 8 characters"
+            />
+          </div>
+          <div class="field">
+            <label for="signup-confirm">Confirm password</label>
+            <input
+              id="signup-confirm"
+              type="password"
+              name="confirm"
+              autocomplete="new-password"
+              placeholder="Repeat password"
+            />
+          </div>
+          <button type="submit" class="submit">Create Account</button>
+        </form>
+
+        <p class="hint">
+          After Submit You’ll Proceed To The Secure Management Dashboard For Appointments, Grooming Schedules, And Patient Records.
+          <a href="admindb.html">Open Dashboard</a>.
+        </p>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const tabLogin = document.getElementById("tab-login");
+        const tabSignup = document.getElementById("tab-signup");
+        const panelLogin = document.getElementById("panel-login");
+        const panelSignup = document.getElementById("panel-signup");
+        const errorEl = document.getElementById("error");
+
+        function showError(msg) {
+          errorEl.textContent = msg;
+          errorEl.classList.add("show");
+        }
+        function clearError() {
+          errorEl.textContent = "";
+          errorEl.classList.remove("show");
+        }
+
+        function setTab(loginActive) {
+          tabLogin.setAttribute("aria-selected", loginActive);
+          tabSignup.setAttribute("aria-selected", !loginActive);
+          panelLogin.classList.toggle("active", loginActive);
+          panelSignup.classList.toggle("active", !loginActive);
+          panelLogin.hidden = !loginActive;
+          panelSignup.hidden = loginActive;
+          clearError();
+        }
+
+        tabLogin.addEventListener("click", () => setTab(true));
+        tabSignup.addEventListener("click", () => setTab(false));
+
+function goDashboard(role, name) {
+  sessionStorage.setItem("bac_role", role);
+  if (name) sessionStorage.setItem("bac_name", name);
+
+  if (role === "admin") {
+    window.location.href = "admindb.html";
+  } else if (role === "staff") {
+    window.location.href = "staffdb.html";
+  }
+}
+
+        panelLogin.addEventListener("submit", function (e) {
+          e.preventDefault();
+          clearError();
+          const role = panelLogin.querySelector('input[name="role_login"]:checked');
+          const email = document.getElementById("login-email").value.trim();
+          const password = document.getElementById("login-password").value;
+          if (!role) {
+            showError("Please Choose Admin Or Staff.");
+            return;
+          }
+          if (!email || !password) {
+            showError("Please Enter Email And Password.");
+            return;
+          }
+          goDashboard(role.value);
+        });
+
+        panelSignup.addEventListener("submit", function (e) {
+          e.preventDefault();
+          clearError();
+          const role = panelSignup.querySelector('input[name="role_signup"]:checked');
+          const name = document.getElementById("signup-name").value.trim();
+          const email = document.getElementById("signup-email").value.trim();
+          const password = document.getElementById("signup-password").value;
+          const confirm = document.getElementById("signup-confirm").value;
+          if (!role) {
+            showError("Please Choose Admin Or Staff.");
+            return;
+          }
+          if (!name || !email || !password) {
+            showError("Please Fill In All Fields.");
+            return;
+          }
+          if (password.length < 8) {
+            showError("Password Must Be At Least 8 Characters.");
+            return;
+          }
+          if (password !== confirm) {
+            showError("Passwords Do Not Match.");
+            return;
+          }
+          goDashboard(role.value, name);
+        });
+      })();
+    </script>
+  </body>
+</html>
