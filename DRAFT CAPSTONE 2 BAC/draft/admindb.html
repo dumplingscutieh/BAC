@@ -1,0 +1,832 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Balagtas Animal Clinic — Sample Dashboard</title>
+    <style>
+      :root{
+        --bg:#F8FAFC;
+        --card:#FFFFFF;
+        --text:#0F172A;
+        --muted:#475569;
+        --muted2:#64748B;
+        --border:#E2E8F0;
+        --shadow: 0 1px 2px rgba(15,23,42,.06), 0 8px 24px rgba(15,23,42,.06);
+        --primary:#0EA5A4;
+        --primary2:#0F766E;
+        --good:#22C55E;
+        --warn:#F59E0B;
+        --bad:#EF4444;
+        --info:#3B82F6;
+        --radius:14px;
+      }
+      *{box-sizing:border-box}
+      html,body{height:100%}
+      body{
+        margin:0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        background:var(--bg);
+        color:var(--text);
+      }
+      .app{display:flex; min-height:100vh;}
+
+      /* Sidebar */
+      .sidebar{
+        width:260px;
+        background:#fff;
+        border-right:1px solid var(--border);
+        padding:18px 14px;
+        position:sticky;
+        top:0;
+        height:100vh;
+      }
+      .brand{
+        display:flex;
+        gap:10px;
+        align-items:center;
+        padding:10px 10px 18px 10px;
+      }
+      .logo{
+        width:36px; height:36px; border-radius:10px;
+        background:linear-gradient(135deg, var(--primary), #22C1C3);
+        box-shadow:0 10px 22px rgba(14,165,164,.25);
+        display:grid; place-items:center;
+        color:#fff; font-weight:800; letter-spacing:.2px;
+      }
+      .brand h1{
+        font-size:14px; margin:0; line-height:1.2;
+        letter-spacing:.2px;
+      }
+      .brand p{margin:0; font-size:12px; color:var(--muted2)}
+      .nav{display:flex; flex-direction:column; gap:6px; margin-top:8px;}
+      .nav a{
+        text-decoration:none;
+        color:var(--muted);
+        display:flex;
+        align-items:center;
+        gap:10px;
+        padding:10px 10px;
+        border-radius:12px;
+        border:1px solid transparent;
+        cursor:pointer;
+      }
+      .nav a .ico{
+        width:28px; height:28px;
+        border-radius:10px;
+        display:grid; place-items:center;
+        background:#F1F5F9;
+        color:#0F172A;
+        font-size:13px;
+      }
+      .nav a.active{
+        background:#ECFEFF;
+        color:#0F172A;
+        border-color:#BFF7F6;
+        position:relative;
+      }
+      .nav a.active::before{
+        content:"";
+        position:absolute;
+        left:-14px;
+        top:10px;
+        bottom:10px;
+        width:4px;
+        border-radius:99px;
+        background:var(--primary);
+      }
+      .nav a:hover:not(.active){
+        background:#F1F5F9;
+      }
+      .nav .section{
+        margin:14px 10px 6px;
+        font-size:11px;
+        font-weight:700;
+        color:#94A3B8;
+        text-transform:uppercase;
+        letter-spacing:.12em;
+      }
+
+      /* Main */
+      .main{flex:1; display:flex; flex-direction:column; min-width:0;}
+      .topbar{
+        height:64px;
+        background:#fff;
+        border-bottom:1px solid var(--border);
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        padding:0 22px;
+        gap:16px;
+        position:sticky;
+        top:0;
+        z-index:2;
+      }
+      .topbar .left{
+        display:flex; align-items:center; gap:10px;
+        min-width:220px;
+      }
+      .crumb{
+        font-size:12px;
+        color:var(--muted2);
+      }
+      .search{
+        flex:1;
+        display:flex;
+        justify-content:center;
+      }
+      .search .box{
+        width:min(680px, 100%);
+        height:40px;
+        border:1px solid var(--border);
+        border-radius:12px;
+        display:flex;
+        align-items:center;
+        padding:0 12px;
+        gap:10px;
+        color:var(--muted2);
+        background:#fff;
+      }
+      .search input{
+        border:none; outline:none; flex:1;
+        font-size:13px;
+        background:transparent;
+      }
+      .right{
+        display:flex; align-items:center; gap:10px;
+        min-width:220px; justify-content:flex-end;
+      }
+      .pill{
+        height:34px;
+        border:1px solid var(--border);
+        border-radius:999px;
+        padding:0 12px;
+        display:flex;
+        align-items:center;
+        gap:8px;
+        background:#fff;
+        color:var(--muted);
+        font-size:12px;
+        white-space:nowrap;
+      }
+      .iconbtn{
+        width:36px; height:36px;
+        border-radius:12px;
+        border:1px solid var(--border);
+        background:#fff;
+        display:grid; place-items:center;
+        color:var(--muted);
+        cursor:pointer;
+      }
+      .iconbtn:hover{
+        background:#F1F5F9;
+      }
+      .avatar{
+        width:36px; height:36px;
+        border-radius:12px;
+        background:linear-gradient(135deg, #A78BFA, #60A5FA);
+        border:1px solid rgba(15,23,42,.08);
+        cursor:pointer;
+      }
+
+      /* Content */
+      .content{
+        padding:22px;
+        display:flex;
+        flex-direction:column;
+        gap:16px;
+      }
+      .headerRow{
+        display:flex;
+        justify-content:space-between;
+        gap:14px;
+        flex-wrap:wrap;
+        align-items:flex-end;
+      }
+      .headerRow h2{margin:0; font-size:28px; letter-spacing:-.02em;}
+      .headerRow .sub{margin:6px 0 0; color:var(--muted2); font-size:13px;}
+      .actions{
+        display:flex; gap:10px; flex-wrap:wrap;
+        align-items:center;
+      }
+      .btn{
+        height:36px;
+        padding:0 12px;
+        border-radius:12px;
+        border:1px solid var(--border);
+        background:#fff;
+        color:var(--text);
+        font-size:12.5px;
+        font-weight:650;
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        cursor:pointer;
+        transition: all 0.15s ease;
+      }
+      .btn:hover{
+        background:#F1F5F9;
+        border-color:#CBD5E1;
+      }
+      .btn.primary{
+        background:var(--primary);
+        border-color:rgba(14,165,164,.25);
+        color:#fff;
+        box-shadow:0 10px 22px rgba(14,165,164,.18);
+      }
+      .btn.primary:hover{
+        background:var(--primary2);
+      }
+      .btn .dot{
+        width:8px; height:8px; border-radius:99px;
+        background:currentColor;
+        opacity:.9;
+      }
+      .btn.primary .dot{background:#fff}
+
+      .grid4{
+        display:grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap:14px;
+      }
+      .grid2{
+        display:grid;
+        grid-template-columns: 2fr 1fr;
+        gap:14px;
+      }
+      .gridBottom{
+        display:grid;
+        grid-template-columns: 2fr 1fr;
+        gap:14px;
+      }
+      .gridBottom > :only-child{
+        grid-column: 1 / -1;
+      }
+      @media (max-width: 1100px){
+        .grid4{grid-template-columns: repeat(2, minmax(0, 1fr));}
+        .grid2,.gridBottom{grid-template-columns:1fr;}
+        .sidebar{display:none;}
+        .topbar .left{min-width:auto;}
+        .right{min-width:auto;}
+      }
+      .card{
+        background:var(--card);
+        border:1px solid var(--border);
+        border-radius:var(--radius);
+        box-shadow:var(--shadow);
+        overflow:hidden;
+      }
+      .cardPad{padding:16px;}
+      .cardTitle{
+        font-size:12px;
+        color:var(--muted);
+        font-weight:700;
+        letter-spacing:.02em;
+        display:flex;
+        justify-content:space-between;
+        gap:10px;
+        align-items:center;
+      }
+      .kpiValue{
+        margin-top:8px;
+        font-size:24px;
+        font-weight:800;
+        letter-spacing:-.02em;
+      }
+      .kpiMeta{
+        margin-top:8px;
+        font-size:12px;
+        color:var(--muted2);
+        display:flex;
+        align-items:center;
+        gap:8px;
+      }
+      .badge{
+        padding:4px 8px;
+        border-radius:999px;
+        font-size:11px;
+        font-weight:750;
+        border:1px solid var(--border);
+        background:#F8FAFC;
+        color:var(--muted);
+      }
+      .badge.good{background:rgba(34,197,94,.10); border-color:rgba(34,197,94,.18); color:#166534;}
+      .badge.warn{background:rgba(245,158,11,.12); border-color:rgba(245,158,11,.22); color:#92400E;}
+      .badge.bad{background:rgba(239,68,68,.12); border-color:rgba(239,68,68,.22); color:#991B1B;}
+      .badge.info{background:rgba(59,130,246,.10); border-color:rgba(59,130,246,.18); color:#1D4ED8;}
+
+      /* Charts */
+      .chartWrap{padding:14px 16px 16px;}
+      .chartHeader{display:flex; justify-content:space-between; align-items:center; gap:10px;}
+      .chartHeader h3{margin:0; font-size:13px; color:var(--text); letter-spacing:.01em;}
+      .chartHeader span{font-size:12px; color:var(--muted2);}
+      .chartArea{
+        margin-top:10px; 
+        border:1px solid var(--border); 
+        border-radius:12px; 
+        background:#fff; 
+        overflow:hidden;
+        cursor:pointer;
+        transition: all 0.2s ease;
+      }
+      .chartArea:hover{
+        border-color:var(--primary);
+        box-shadow: 0 0 0 3px rgba(14,165,164,.1);
+      }
+      .chartArea svg{display:block; width:100%; height:auto;}
+      .legend{display:flex; gap:12px; flex-wrap:wrap; margin-top:10px; color:var(--muted2); font-size:12px;}
+      .legend .key{display:flex; align-items:center; gap:8px;}
+      .swatch{width:10px; height:10px; border-radius:3px; background:#CBD5E1;}
+
+      /* Bar styles */
+      .bar{
+        transition: all 0.15s ease;
+        cursor:pointer;
+      }
+      .bar:hover{
+        filter: brightness(1.1);
+      }
+
+      /* Table */
+      table{width:100%; border-collapse:separate; border-spacing:0;}
+      thead th{
+        text-align:left;
+        font-size:11px;
+        color:#64748B;
+        font-weight:800;
+        letter-spacing:.12em;
+        text-transform:uppercase;
+        padding:10px 12px;
+        border-bottom:1px solid var(--border);
+        background:#FBFDFF;
+      }
+      tbody td{
+        padding:10px 12px;
+        border-bottom:1px solid var(--border);
+        font-size:13px;
+        color:#0F172A;
+      }
+      tbody tr{
+        cursor:pointer;
+        transition: background 0.1s ease;
+      }
+      tbody tr:hover td{background:#F0FDFA;}
+      .mono{font-variant-numeric: tabular-nums; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
+      .status{
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+      }
+      .status .dot{
+        width:8px; height:8px; border-radius:99px;
+        background:#CBD5E1;
+      }
+      .dot.good{background:var(--good)}
+      .dot.warn{background:var(--warn)}
+      .dot.bad{background:var(--bad)}
+
+      /* Alerts */
+      .alerts{display:flex; flex-direction:column;}
+      .alertItem{
+        display:flex;
+        gap:12px;
+        padding:12px 14px;
+        border-bottom:1px solid var(--border);
+        align-items:flex-start;
+        cursor:pointer;
+        transition: background 0.1s ease;
+      }
+      .alertItem:hover{
+        background:#F8FAFC;
+      }
+      .alertItem:last-child{border-bottom:none;}
+      .alertDot{
+        width:10px; height:10px;
+        border-radius:99px;
+        margin-top:4px;
+        background:#CBD5E1;
+        flex:0 0 auto;
+      }
+      .alertDot.bad{background:var(--bad)}
+      .alertDot.warn{background:var(--warn)}
+      .alertDot.info{background:var(--info)}
+      .alertTitle{
+        font-size:13px;
+        font-weight:800;
+        margin:0;
+        letter-spacing:-.01em;
+      }
+      .alertMeta{
+        margin-top:3px;
+        font-size:12px;
+        color:var(--muted2);
+      }
+      .alertRight{
+        margin-left:auto;
+        display:flex;
+        align-items:center;
+        gap:8px;
+      }
+      .tiny{font-size:12px; color:var(--muted2);}
+
+      /* Tooltip */
+      .tooltip{
+        position:fixed;
+        background:#0F172A;
+        color:#fff;
+        padding:8px 12px;
+        border-radius:8px;
+        font-size:12px;
+        pointer-events:none;
+        z-index:1000;
+        opacity:0;
+        transition: opacity 0.15s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      }
+      .tooltip.show{
+        opacity:1;
+      }
+      .tooltip-value{
+        font-weight:700;
+        font-size:14px;
+      }
+      .tooltip-label{
+        color:#94A3B8;
+        margin-top:2px;
+      }
+
+      /* Click hint */
+      .click-hint{
+        font-size:11px;
+        color:var(--muted2);
+        display:flex;
+        align-items:center;
+        gap:4px;
+        margin-top:8px;
+      }
+      .click-hint::before{
+        content:"👆";
+        font-size:12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+  <img src="BAC.png" class="clinic-logo" alt="Clinic Logo" />
+  <div>
+    <h1>Balagtas Animal Clinic</h1>
+    <p>Operations Dashboard</p>
+  </div>
+</div>
+
+
+        <nav class="nav">
+          <a class="active" href="admindb.html">
+            <div class="ico">▦</div>
+            Dashboard
+          </a>
+          <a href="pos.html"><div class="ico">₱</div>POS</a>
+          <a href="inventory.html"><div class="ico">⧉</div>Inventory</a>
+          <a href="patientrecords.html"><div class="ico">🐾</div>Patient Records</a>
+          <a href="report.html"><div class="ico">📈</div>Reports</a>
+          <a href="alert.html"><div class="ico">⏰</div>Alerts</a>
+          <a href="#"><div class="ico">💬</div>Messages</a>
+          <a href="settings.html"><div class="ico">⚙</div>Settings</a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="left">
+            <div class="crumb">Home / Dashboard</div>
+          </div>
+
+          <div class="search" aria-label="Search">
+            <div class="box">
+              <span style="font-size:14px;">⌕</span>
+              <input value="" placeholder="Search pet, owner, invoice, item…" />
+              <span class="badge info">Search</span>
+            </div>
+          </div>
+
+          <div class="right">
+            <div class="pill" id="role-pill" title="Signed-in role" style="display:none">
+              <span id="role-icon">👤</span>
+              <span id="role-label">Guest</span>
+            </div>
+            <div class="avatar" title="User"></div>
+            <button class="iconbtn" title="Notifications">🔔</button>
+            <div class="pill" title="Date range">
+              <span>📅</span>
+              <span>This Week</span>
+              <span style="opacity:.75">▾</span>
+            </div>
+            <a class="pill" href="auth.html" id="sign-out" title="Sign out" style="text-decoration:none;color:inherit">
+              <span>↩</span>
+              <span>Sign out</span>
+            </a>
+          </div>
+        </header>
+
+        <section class="content">
+          <div class="headerRow">
+            <div>
+              <h2>Dashboard</h2>
+              <div class="sub">Sales, appointments, stock health, and clinic alerts at a glance.</div>
+            </div>
+            <div class="actions">
+              <span class="btn primary"><span class="dot"></span>New Sale</span>
+              <span class="btn"><span class="dot" style="background:var(--primary)"></span>Add Stock</span>
+              <span class="btn"><span class="dot" style="background:var(--info)"></span>New Pet Record</span>
+              <span class="btn"><span class="dot" style="background:var(--good)"></span>Book Appointment</span>
+            </div>
+          </div>
+
+          <div class="grid4">
+            <div class="card">
+              <div class="cardPad">
+                <div class="cardTitle">
+                  <span>Today Sales</span>
+                  <span class="badge good">—</span>
+                </div>
+                <div class="kpiValue">—</div>
+                <div class="kpiMeta"><span class="mono">—</span></div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="cardPad">
+                <div class="cardTitle">
+                  <span>Appointments Today</span>
+                  <span class="badge info">—</span>
+                </div>
+                <div class="kpiValue">—</div>
+                <div class="kpiMeta">—</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="cardPad">
+                <div class="cardTitle">
+                  <span>Low Stock Items</span>
+                  <span class="badge warn">—</span>
+                </div>
+                <div class="kpiValue">—</div>
+                <div class="kpiMeta">—</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="cardPad">
+                <div class="cardTitle">
+                  <span>Pending Alerts</span>
+                  <span class="badge bad">—</span>
+                </div>
+                <div class="kpiValue">—</div>
+                <div class="kpiMeta">—</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid2">
+            <div class="card">
+              <div class="chartWrap">
+                <div class="chartHeader">
+                  <h3>Weekly Revenue (Last 7 Days)</h3>
+                  <span class="mono">—</span>
+                </div>
+                <div class="chartArea" aria-label="Bar chart" onclick="handleChartClick('revenue')" title="Click to view detailed report">
+                  <svg viewBox="0 0 920 320" role="img" aria-label="Revenue bar chart">
+                    <!-- grid -->
+                    <g stroke="#E2E8F0" stroke-width="1">
+                      <line x1="56" y1="40" x2="900" y2="40" />
+                      <line x1="56" y1="92" x2="900" y2="92" />
+                      <line x1="56" y1="144" x2="900" y2="144" />
+                      <line x1="56" y1="196" x2="900" y2="196" />
+                      <line x1="56" y1="248" x2="900" y2="248" />
+                      <line x1="56" y1="300" x2="900" y2="300" />
+                    </g>
+                    <!-- y labels -->
+                    <g fill="#64748B" font-size="12" font-family="ui-sans-serif, system-ui">
+                      <text x="10" y="304"></text>
+                      <text x="6" y="252"></text>
+                      <text x="6" y="200"></text>
+                      <text x="6" y="148"></text>
+                      <text x="6" y="96"></text>
+                      <text x="6" y="44"></text>
+                    </g>
+                    <!-- bars -->
+                    <g>
+                      <rect class="bar" x="76" y="300" width="70" height="0" rx="6" fill="#0EA5A4" data-day="Mon" />
+                      <rect class="bar" x="176" y="300" width="70" height="0" rx="6" fill="#0EA5A4" data-day="Tue" />
+                      <rect class="bar" x="276" y="300" width="70" height="0" rx="6" fill="#0EA5A4" data-day="Wed" />
+                      <rect class="bar" x="376" y="300" width="70" height="0" rx="6" fill="#0EA5A4" data-day="Thu" />
+                      <rect class="bar" x="476" y="300" width="70" height="0" rx="6" fill="#0EA5A4" data-day="Fri" />
+                      <rect class="bar" x="576" y="300" width="70" height="0" rx="6" fill="#0EA5A4" data-day="Sat" />
+                      <rect class="bar" x="676" y="300" width="70" height="0" rx="6" fill="#0EA5A4" data-day="Sun" />
+                    </g>
+                    <!-- x labels -->
+                    <g fill="#64748B" font-size="12" font-family="ui-sans-serif, system-ui" text-anchor="middle">
+                      <text x="111" y="318">Mon</text>
+                      <text x="211" y="318">Tue</text>
+                      <text x="311" y="318">Wed</text>
+                      <text x="411" y="318">Thu</text>
+                      <text x="511" y="318">Fri</text>
+                      <text x="611" y="318">Sat</text>
+                      <text x="711" y="318">Sun</text>
+                    </g>
+                  </svg>
+                </div>
+                <div class="legend">
+                  <div class="key"><span class="swatch" style="background:var(--primary)"></span>Daily Revenue</div>
+                </div>
+                <div class="click-hint">Click chart to view full revenue report</div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="chartWrap">
+                <div class="chartHeader">
+                  <h3>Inventory Status</h3>
+                  <span class="tiny">As of today</span>
+                </div>
+                <div class="chartArea" style="padding:14px;" onclick="handleChartClick('inventory')" title="Click to view inventory details">
+                  <svg viewBox="0 0 320 260" role="img" aria-label="Inventory donut chart">
+                    <!-- donut background -->
+                    <circle cx="130" cy="130" r="78" fill="none" stroke="#E2E8F0" stroke-width="20"></circle>
+                    <!-- segments (circumference ~ 2πr = 490) -->
+                    <g transform="rotate(-90 130 130)">
+                      <!-- In stock placeholder -->
+                      <circle class="bar" cx="130" cy="130" r="78" fill="none" stroke="#22C55E" stroke-width="20"
+                        stroke-dasharray="0 490" stroke-linecap="round"></circle>
+                      <!-- Low placeholder -->
+                      <circle class="bar" cx="130" cy="130" r="78" fill="none" stroke="#F59E0B" stroke-width="20"
+                        stroke-dasharray="0 490" stroke-dashoffset="-0" stroke-linecap="round"></circle>
+                      <!-- Out placeholder -->
+                      <circle class="bar" cx="130" cy="130" r="78" fill="none" stroke="#EF4444" stroke-width="20"
+                        stroke-dasharray="0 490" stroke-dashoffset="-0" stroke-linecap="round"></circle>
+                    </g>
+                    <text x="130" y="125" text-anchor="middle" font-size="28" font-weight="800" fill="#0F172A">—</text>
+                    <text x="130" y="148" text-anchor="middle" font-size="12" font-weight="700" fill="#64748B">In Stock</text>
+
+                    <g font-size="12" fill="#334155" font-family="ui-sans-serif, system-ui">
+                      <rect x="230" y="70" width="10" height="10" rx="2" fill="#22C55E"></rect>
+                      <text x="246" y="79">In Stock</text>
+                      <text x="246" y="96" fill="#64748B"></text>
+
+                      <rect x="230" y="120" width="10" height="10" rx="2" fill="#F59E0B"></rect>
+                      <text x="246" y="129">Low</text>
+                      <text x="246" y="146" fill="#64748B"></text>
+
+                      <rect x="230" y="170" width="10" height="10" rx="2" fill="#EF4444"></rect>
+                      <text x="246" y="179">Out</text>
+                      <text x="246" y="196" fill="#64748B"></text>
+                    </g>
+                  </svg>
+                </div>
+                <div class="click-hint">Click chart to view inventory details</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="gridBottom">
+            <div class="card">
+              <div class="chartHeader" style="padding:14px 16px; border-bottom:1px solid var(--border); background:#FBFDFF;">
+                <h3 style="margin:0;">Notifications & Alerts</h3>
+                <span class="badge info">Live</span>
+              </div>
+              <div class="alerts" role="list">
+                <div class="alertItem" role="listitem" onclick="handleAlertClick('low-stock')">
+                  <span class="alertDot bad"></span>
+                  <div>
+                    <p class="alertTitle">Low stock alert</p>
+                    <div class="alertMeta">Real-time inventory updates appear here.</div>
+                  </div>
+                  <div class="alertRight">
+                    <span class="badge bad">Critical</span>
+                  </div>
+                </div>
+                <div class="alertItem" role="listitem" onclick="handleAlertClick('expiry')">
+                  <span class="alertDot warn"></span>
+                  <div>
+                    <p class="alertTitle">Expiry alert</p>
+                    <div class="alertMeta">Real-time expiration notices appear here.</div>
+                  </div>
+                  <div class="alertRight">
+                    <span class="badge warn">Soon</span>
+                  </div>
+                </div>
+                <div class="alertItem" role="listitem" onclick="handleAlertClick('new-pet')">
+                  <span class="alertDot info"></span>
+                  <div>
+                    <p class="alertTitle">New record notification</p>
+                    <div class="alertMeta">Live updates will show new entries here.</div>
+                  </div>
+                  <div class="alertRight">
+                    <span class="badge info">Info</span>
+                  </div>
+                </div>
+                <div class="alertItem" role="listitem" onclick="handleAlertClick('walk-ins')">
+                  <span class="alertDot info"></span>
+                  <div>
+                    <p class="alertTitle">Queue update</p>
+                    <div class="alertMeta">Realtime patient queue updates appear here.</div>
+                  </div>
+                  <div class="alertRight">
+                    <span class="badge info">Live</span>
+                  </div>
+                </div>
+                <div class="alertItem" role="listitem" onclick="handleAlertClick('shift-close')">
+                  <span class="alertDot warn"></span>
+                  <div>
+                    <p class="alertTitle">Shift reminder</p>
+                    <div class="alertMeta">Realtime schedule updates appear here.</div>
+                  </div>
+                  <div class="alertRight">
+                    <span class="badge warn">Reminder</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Tooltip element -->
+    <div class="tooltip" id="tooltip">
+      <div class="tooltip-value"></div>
+      <div class="tooltip-label"></div>
+    </div>
+
+    <script>
+      (function () {
+        var role = sessionStorage.getItem("bac_role");
+        var name = sessionStorage.getItem("bac_name");
+        var pill = document.getElementById("role-pill");
+        var label = document.getElementById("role-label");
+        var icon = document.getElementById("role-icon");
+        if (role && pill && label) {
+          pill.style.display = "flex";
+          icon.textContent = role === "admin" ? "⚙️" : "👨🏻‍💼";
+          var r = role === "admin" ? "Admin" : "Staff";
+          label.textContent = name ? name + " · " + r : r;
+        }
+      })();
+
+      document.getElementById("sign-out").addEventListener("click", function () {
+        sessionStorage.removeItem("bac_role");
+        sessionStorage.removeItem("bac_name");
+      });
+
+      // Tooltip functions
+      const tooltip = document.getElementById('tooltip');
+      
+      function showTooltip(event, label, value) {
+        const tooltipValue = tooltip.querySelector('.tooltip-value');
+        const tooltipLabel = tooltip.querySelector('.tooltip-label');
+        
+        tooltipValue.textContent = value;
+        tooltipLabel.textContent = label;
+        
+        tooltip.style.left = (event.pageX + 12) + 'px';
+        tooltip.style.top = (event.pageY - 10) + 'px';
+        tooltip.classList.add('show');
+      }
+      
+      function hideTooltip() {
+        tooltip.classList.remove('show');
+      }
+
+      // Chart click handlers
+      function handleChartClick(chartType) {
+        if (chartType === 'revenue') {
+          alert('Opening Revenue Report...\n\nThis would navigate to: Reports > Revenue Analysis');
+          // In real app: window.location.href = '/reports/revenue';
+        } else if (chartType === 'inventory') {
+          alert('Opening Inventory Details...\n\nThis would navigate to: Inventory > Stock Overview');
+          // In real app: window.location.href = '/inventory';
+        }
+      }
+
+      // Alert click handler
+      function handleAlertClick(alertType) {
+        const alertMessages = {
+          'low-stock': 'Opening Inventory > Low Stock Items',
+          'expiry': 'Opening Inventory > Expiring Items',
+          'new-pet': 'Opening Patient Records > P-2041',
+          'walk-ins': 'Opening Appointments > Walk-in Queue',
+          'shift-close': 'Opening POS > Shift Management'
+        };
+        alert(`${alertMessages[alertType]}\n\nThis would navigate to the relevant section.`);
+      }
+
+      // Update tooltip position on mouse move over chart elements
+      document.querySelectorAll('.bar').forEach(bar => {
+        bar.addEventListener('mousemove', (e) => {
+          tooltip.style.left = (e.pageX + 12) + 'px';
+          tooltip.style.top = (e.pageY - 10) + 'px';
+        });
+      });
+    </script>
+  </body>
+</html>

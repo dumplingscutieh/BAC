@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Balagtas Animal Clinic — Sign in</title>
+    <style>
+      :root {
+        --bg: #eef7f5;
+        --card: rgba(255, 255, 255, 0.95);
+        --text: #12343b;
+        --muted: #527177;
+        --muted2: #6d8b90;
+        --border: #d7ebe7;
+        --shadow: 0 12px 40px rgba(18, 52, 59, 0.12);
+        --primary: #2f9e8f;
+        --primary2: #1f6f64;
+        --accent: #dff5f1;
+        --radius: 18px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background:
+          linear-gradient(rgba(238, 247, 245, 0.88), rgba(238, 247, 245, 0.92)),
+          url("https://images.unsplash.com/photo-1576201836106-db1758fd1c97?q=80&w=1400&auto=format&fit=crop")
+            center/cover no-repeat;
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px 16px;
+      }
+
+      .wrap {
+        width: min(470px, 100%);
+      }
+
+      .brand {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+      }
+
+      .logo {
+        width: 58px;
+        height: 58px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, var(--primary), #59c9b7);
+        box-shadow: 0 10px 25px rgba(47, 158, 143, 0.35);
+        display: grid;
+        place-items: center;
+        color: #fff;
+        font-size: 24px;
+      }
+
+      .brand h1 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+      }
+
+      .brand p {
+        margin: 5px 0 0;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .card {
+        background: var(--card);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 30px 28px;
+      }
+
+      .welcome {
+        text-align: center;
+        margin-bottom: 24px;
+      }
+
+      .welcome h2 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 800;
+      }
+
+      .welcome p {
+        margin-top: 8px;
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 8px;
+        padding: 5px;
+        background: var(--accent);
+        border-radius: 14px;
+        margin-bottom: 24px;
+      }
+
+      .tabs button {
+        flex: 1;
+        border: none;
+        background: transparent;
+        padding: 12px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .tabs button[aria-selected="true"] {
+        background: #ffffff;
+        color: var(--primary2);
+        box-shadow: 0 4px 12px rgba(18, 52, 59, 0.08);
+      }
+
+      .panel {
+        display: none;
+      }
+
+      .panel.active {
+        display: block;
+      }
+
+      label {
+        display: block;
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--muted);
+        margin-bottom: 7px;
+      }
+
+      .field {
+        margin-bottom: 18px;
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="password"] {
+        width: 100%;
+        padding: 13px 14px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: #fff;
+        font-size: 14px;
+        color: var(--text);
+        outline: none;
+        transition: all 0.2s ease;
+      }
+
+      input:focus {
+        border-color: #86d9cc;
+        box-shadow: 0 0 0 4px rgba(47, 158, 143, 0.12);
+      }
+
+      .roles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.role {
+  display: block;
+  width: 100%;
+  cursor: pointer;
+}
+
+.role input {
+  display: none;
+}
+
+.role-card {
+  width: 100%;
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  padding: 18px 14px;
+  background: #ffffff;
+  text-align: center;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+.role-card:hover {
+  transform: translateY(-2px);
+  border-color: #8ed8cd;
+  background: #f7fffd;
+  box-shadow: 0 8px 20px rgba(47, 158, 143, 0.12);
+}
+
+.role-card .t {
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text);
+}
+
+.role input:checked + .role-card {
+  border-color: var(--primary);
+  background: #eefcf8;
+  box-shadow: 0 10px 24px rgba(47, 158, 143, 0.18);
+}
+
+      .submit {
+        width: 100%;
+        margin-top: 8px;
+        padding: 14px 16px;
+        border: none;
+        border-radius: 14px;
+        background: linear-gradient(135deg, var(--primary), var(--primary2));
+        color: #fff;
+        font-size: 15px;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+        box-shadow: 0 10px 24px rgba(47, 158, 143, 0.3);
+        transition: all 0.2s ease;
+      }
+
+      .submit:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.03);
+      }
+
+      .submit:active {
+        transform: translateY(1px);
+      }
+
+      .hint {
+        margin-top: 20px;
+        text-align: center;
+        font-size: 12px;
+        color: var(--muted2);
+        line-height: 1.6;
+      }
+
+      .hint a {
+        color: var(--primary2);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .hint a:hover {
+        text-decoration: underline;
+      }
+
+      .error {
+        display: none;
+        margin-bottom: 16px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: #fff1f2;
+        border: 1px solid #fecdd3;
+        color: #be123c;
+        font-size: 13px;
+      }
+
+      .error.show {
+        display: block;
+      }
+
+      @media (max-width: 520px) {
+        .card {
+          padding: 24px 20px;
+        }
+
+        .roles {
+          grid-template-columns: 1fr;
+        }
+
+        .brand {
+          flex-direction: column;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">🐾</div>
+        <div>
+          <h1>Balagtas Animal Clinic</h1>
+          <p>Clinic management portal</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="tabs" role="tablist" aria-label="Authentication mode">
+          <button type="button" id="tab-login" role="tab" aria-selected="true" aria-controls="panel-login">
+            Log in
+          </button>
+          <button type="button" id="tab-signup" role="tab" aria-selected="false" aria-controls="panel-signup">
+            Sign up
+          </button>
+        </div>
+
+        <div id="error" class="error" role="alert"></div>
+
+        <!-- Login -->
+        <form id="panel-login" class="panel active" role="tabpanel" aria-labelledby="tab-login" novalidate>
+          <div class="field">
+            <span class="role-label label">I am signing in as</span>
+            <div class="roles" role="radiogroup" aria-label="Account type">
+              <label class="role">
+                <input type="radio" name="role_login" value="admin" required />
+                <span class="role-card">
+                  <div class="icon" aria-hidden="true"></div>
+                  <div class="t">Admin</div>
+                </span>
+              </label>
+              <label class="role">
+                <input type="radio" name="role_login" value="staff" required />
+                <span class="role-card">
+                  <div class="icon" aria-hidden="true"></div>
+                  <div class="t">Staff</div>
+                </span>
+              </label>
+            </div>
+          </div>
+          <div class="field">
+            <label for="login-email">Email</label>
+            <input id="login-email" type="email" name="email" autocomplete="username" placeholder="" />
+          </div>
+          <div class="field">
+            <label for="login-password">Password</label>
+            <input
+              id="login-password"
+              type="password"
+              name="password"
+              autocomplete="current-password"
+              placeholder=""
+            />
+          </div>
+          <button type="submit" class="submit">Log in</button>
+        </form>
+
+        <!-- Sign up -->
+        <form id="panel-signup" class="panel" role="tabpanel" aria-labelledby="tab-signup" hidden novalidate>
+          <div class="field">
+            <span class="role-label label">I am registering as</span>
+            <div class="roles" role="radiogroup" aria-label="Account type">
+              <label class="role">
+                <input type="radio" name="role_signup" value="admin" required />
+                <span class="role-card">
+                  <div class="icon" aria-hidden="true"></div>
+                  <div class="t">Admin</div>
+                </span>
+              </label>
+              <label class="role">
+                <input type="radio" name="role_signup" value="staff" required />
+                <span class="role-card">
+                  <div class="icon" aria-hidden="true"></div>
+                  <div class="t">Staff</div>
+                </span>
+              </label>
+            </div>
+          </div>
+          <div class="field">
+            <label for="signup-name">Full name</label>
+            <input id="signup-name" type="text" name="name" autocomplete="name" placeholder="enter full name"/>
+          </div>
+          <div class="field">
+            <label for="signup-email">Email</label>
+            <input id="signup-email" type="email" name="email" autocomplete="email" placeholder="enter email" />
+          </div>
+          <div class="field">
+            <label for="signup-password">Password</label>
+            <input
+              id="signup-password"
+              type="password"
+              name="password"
+              autocomplete="new-password"
+              placeholder="At least 8 characters"
+            />
+          </div>
+          <div class="field">
+            <label for="signup-confirm">Confirm password</label>
+            <input
+              id="signup-confirm"
+              type="password"
+              name="confirm"
+              autocomplete="new-password"
+              placeholder="Repeat password"
+            />
+          </div>
+          <button type="submit" class="submit">Create account</button>
+        </form>
+
+        <p class="hint">
+          Sample only — no real authentication. After submit you’ll go to the
+          <a href="admindb.html">dashboard</a>.
+        </p>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const tabLogin = document.getElementById("tab-login");
+        const tabSignup = document.getElementById("tab-signup");
+        const panelLogin = document.getElementById("panel-login");
+        const panelSignup = document.getElementById("panel-signup");
+        const errorEl = document.getElementById("error");
+
+        function showError(msg) {
+          errorEl.textContent = msg;
+          errorEl.classList.add("show");
+        }
+        function clearError() {
+          errorEl.textContent = "";
+          errorEl.classList.remove("show");
+        }
+
+        function setTab(loginActive) {
+          tabLogin.setAttribute("aria-selected", loginActive);
+          tabSignup.setAttribute("aria-selected", !loginActive);
+          panelLogin.classList.toggle("active", loginActive);
+          panelSignup.classList.toggle("active", !loginActive);
+          panelLogin.hidden = !loginActive;
+          panelSignup.hidden = loginActive;
+          clearError();
+        }
+
+        tabLogin.addEventListener("click", () => setTab(true));
+        tabSignup.addEventListener("click", () => setTab(false));
+
+function goDashboard(role, name) {
+  sessionStorage.setItem("bac_role", role);
+  if (name) sessionStorage.setItem("bac_name", name);
+
+  if (role === "admin") {
+    window.location.href = "admindb.html";
+  } else if (role === "staff") {
+    window.location.href = "staffdb.html";
+  }
+}
+
+        panelLogin.addEventListener("submit", function (e) {
+          e.preventDefault();
+          clearError();
+          const role = panelLogin.querySelector('input[name="role_login"]:checked');
+          const email = document.getElementById("login-email").value.trim();
+          const password = document.getElementById("login-password").value;
+          if (!role) {
+            showError("Please choose Admin or Staff.");
+            return;
+          }
+          if (!email || !password) {
+            showError("Please enter email and password.");
+            return;
+          }
+          goDashboard(role.value);
+        });
+
+        panelSignup.addEventListener("submit", function (e) {
+          e.preventDefault();
+          clearError();
+          const role = panelSignup.querySelector('input[name="role_signup"]:checked');
+          const name = document.getElementById("signup-name").value.trim();
+          const email = document.getElementById("signup-email").value.trim();
+          const password = document.getElementById("signup-password").value;
+          const confirm = document.getElementById("signup-confirm").value;
+          if (!role) {
+            showError("Please choose Admin or Staff.");
+            return;
+          }
+          if (!name || !email || !password) {
+            showError("Please fill in all fields.");
+            return;
+          }
+          if (password.length < 8) {
+            showError("Password must be at least 8 characters.");
+            return;
+          }
+          if (password !== confirm) {
+            showError("Passwords do not match.");
+            return;
+          }
+          goDashboard(role.value, name);
+        });
+      })();
+    </script>
+  </body>
+</html>

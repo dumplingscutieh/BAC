@@ -1,0 +1,932 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Balagtas Animal Clinic — Staff Inventory</title>
+    <style>
+      :root {
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #0f172a;
+        --muted: #475569;
+        --muted2: #64748b;
+        --border: #e2e8f0;
+        --shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 8px 24px rgba(15, 23, 42, 0.06);
+        --primary: #0ea5a4;
+        --primary2: #0f766e;
+        --good: #22c55e;
+        --warn: #f59e0b;
+        --bad: #ef4444;
+        --info: #3b82f6;
+        --radius: 14px;
+      }
+      * { box-sizing: border-box; }
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+          "Apple Color Emoji", "Segoe UI Emoji";
+        background: var(--bg);
+        color: var(--text);
+      }
+      .app { display: flex; min-height: 100vh; }
+
+      .sidebar {
+        width: 280px;
+        background: #fff;
+        border-right: 1px solid var(--border);
+        padding: 18px 14px;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+      }
+      .brand {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 10px 10px 18px 10px;
+      }
+      .brand img { width: 36px; height: 36px; border-radius: 10px; object-fit: cover; }
+      .brand h1 { font-size: 14px; margin: 0; line-height: 1.2; letter-spacing: 0.2px; }
+      .brand p { margin: 0; font-size: 12px; color: var(--muted2); }
+
+      .nav { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+      .nav a {
+        text-decoration: none;
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 10px;
+        border-radius: 12px;
+        border: 1px solid transparent;
+        cursor: pointer;
+      }
+      .nav a .ico {
+        width: 28px;
+        height: 28px;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+        background: #f1f5f9;
+        color: #0f172a;
+        font-size: 13px;
+      }
+      .nav a.active {
+        background: #ecfeff;
+        color: #0f172a;
+        border-color: #bff7f6;
+        position: relative;
+      }
+      .nav a.active::before {
+        content: "";
+        position: absolute;
+        left: -14px;
+        top: 10px;
+        bottom: 10px;
+        width: 4px;
+        border-radius: 99px;
+        background: var(--primary);
+      }
+      .nav .section {
+        margin: 14px 10px 6px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+      }
+
+      .main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+      .topbar {
+        height: 64px;
+        background: #fff;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 22px;
+        gap: 16px;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+      }
+      .crumb { font-size: 12px; color: var(--muted2); }
+      .pill {
+        height: 34px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 0 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #fff;
+        color: var(--muted);
+        font-size: 12px;
+        white-space: nowrap;
+      }
+      .iconbtn {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: #fff;
+        display: grid;
+        place-items: center;
+        color: var(--muted);
+        cursor: pointer;
+      }
+      .avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #a78bfa, #60a5fa);
+        border: 1px solid rgba(15, 23, 42, 0.08);
+      }
+
+      .content { padding: 22px; display: flex; flex-direction: column; gap: 14px; }
+      .headerRow {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        flex-wrap: wrap;
+        align-items: flex-end;
+      }
+      .headerRow h2 { margin: 0; font-size: 28px; letter-spacing: -0.02em; }
+      .headerRow .sub { margin: 6px 0 0; color: var(--muted2); font-size: 13px; }
+      .actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+      .btn {
+        height: 36px;
+        padding: 0 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: #fff;
+        color: var(--text);
+        font-size: 12.5px;
+        font-weight: 650;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        text-decoration: none;
+      }
+      .btn:hover { background: #f1f5f9; border-color: #cbd5e1; }
+      .btn.primary {
+        background: var(--primary);
+        border-color: rgba(14, 165, 164, 0.25);
+        color: #fff;
+        box-shadow: 0 10px 22px rgba(14, 165, 164, 0.18);
+      }
+      .btn.primary:hover { background: var(--primary2); }
+
+      .gridTop { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+      .grid3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 14px; }
+      @media (max-width: 1100px) {
+        .sidebar { display: none; }
+        .grid3 { grid-template-columns: 1fr; }
+        .gridTop { grid-template-columns: 1fr; }
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .cardHead {
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--border);
+        background: #fbfdff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      }
+      .cardHead h3 { margin: 0; font-size: 13px; letter-spacing: 0.01em; }
+      .badge {
+        padding: 4px 8px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 750;
+        border: 1px solid var(--border);
+        background: #f8fafc;
+        color: var(--muted);
+        white-space: nowrap;
+        display: inline-block;
+      }
+      .badge.good { background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.18); color: #166534; }
+      .badge.warn { background: rgba(245, 158, 11, 0.12); border-color: rgba(245, 158, 11, 0.22); color: #92400e; }
+      .badge.bad { background: rgba(239, 68, 68, 0.12); border-color: rgba(239, 68, 68, 0.22); color: #991b1b; }
+      .badge.info { background: rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.18); color: #1d4ed8; }
+
+      .kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 14px; }
+      .kpi {
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 12px;
+        background: #fff;
+      }
+      .kpi .t { font-size: 12px; color: var(--muted2); font-weight: 700; }
+      .kpi .v { margin-top: 8px; font-size: 22px; font-weight: 850; letter-spacing: -0.02em; }
+      .kpi .m { margin-top: 8px; font-size: 12px; color: var(--muted2); }
+
+      .filters {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 12px 14px;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+      }
+      .filter-search {
+        flex: 1;
+        min-width: 200px;
+        height: 36px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        padding: 0 12px;
+        gap: 8px;
+        background: #f8fafc;
+      }
+      .filter-search input {
+        border: none;
+        outline: none;
+        flex: 1;
+        font-size: 13px;
+        background: transparent;
+        color: var(--text);
+      }
+      select.fsel {
+        height: 36px;
+        padding: 0 10px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: #f8fafc;
+        color: var(--text);
+        font-size: 12.5px;
+        cursor: pointer;
+        outline: none;
+      }
+      .tab-group {
+        display: flex;
+        background: #f1f5f9;
+        border-radius: 10px;
+        padding: 3px;
+        gap: 2px;
+        margin-left: auto;
+      }
+      .tab-group button {
+        padding: 5px 12px;
+        border: none;
+        background: transparent;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted2);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .tab-group button.active {
+        background: #fff;
+        color: var(--text);
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+      }
+
+      table { width: 100%; border-collapse: separate; border-spacing: 0; }
+      thead th {
+        text-align: left;
+        font-size: 11px;
+        color: #64748b;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--border);
+        background: #fff;
+        cursor: pointer;
+        user-select: none;
+      }
+      thead th:hover { color: var(--primary); }
+      tbody td {
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--border);
+        font-size: 13px;
+        color: #0f172a;
+      }
+      tbody tr { cursor: pointer; transition: background 0.1s; }
+      tbody tr:hover td { background: #f0fdfa; }
+      .mono { font-variant-numeric: tabular-nums; font-family: ui-monospace, monospace; }
+
+      .alert-banner {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        background: rgba(239, 68, 68, 0.08);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        border-radius: 12px;
+        font-size: 13px;
+        color: #991b1b;
+      }
+      .alert-banner.warn {
+        background: rgba(245, 158, 11, 0.08);
+        border-color: rgba(245, 158, 11, 0.2);
+        color: #92400e;
+      }
+
+      /* Pagination */
+      .pagination {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 14px;
+        border-top: 1px solid var(--border);
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .pg-info { font-size: 12px; color: var(--muted2); }
+      .pg-btns { display: flex; gap: 6px; }
+      .pg-btn {
+        height: 32px;
+        min-width: 32px;
+        padding: 0 10px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: #fff;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        transition: all 0.15s;
+      }
+      .pg-btn:hover { background: #f1f5f9; }
+      .pg-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+      .pg-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+      /* Modal */
+      .overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.45);
+        z-index: 100;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .overlay.open { display: flex; }
+      .modal {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 24px 80px rgba(15, 23, 42, 0.22);
+        width: 100%;
+        max-width: 560px;
+        max-height: 90vh;
+        overflow-y: auto;
+        animation: popIn 0.2s ease;
+      }
+      @keyframes popIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        background: #fff;
+        z-index: 1;
+        border-radius: 20px 20px 0 0;
+      }
+      .modal-header h3 { margin: 0; font-size: 16px; font-weight: 800; }
+      .close-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        background: #f8fafc;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        font-size: 16px;
+        color: var(--muted);
+        transition: all 0.15s;
+      }
+      .close-btn:hover { background: #f1f5f9; }
+      .modal-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+      .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .info-item { padding: 10px 12px; background: #f8fafc; border-radius: 10px; border: 1px solid var(--border); }
+      .info-label { font-size: 11px; color: var(--muted2); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+      .info-value { font-size: 13px; font-weight: 700; }
+      .modal-footer {
+        padding: 14px 20px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        background: #fbfdff;
+        border-radius: 0 0 20px 20px;
+      }
+      .form-group { display: flex; flex-direction: column; gap: 6px; }
+      .form-label { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+      .form-input {
+        height: 38px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 0 12px;
+        font-size: 13px;
+        background: #f8fafc;
+        color: var(--text);
+        outline: none;
+        transition: border-color 0.15s;
+      }
+      .form-input:focus { border-color: var(--primary); }
+      .form-select {
+        height: 38px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 0 10px;
+        font-size: 13px;
+        background: #f8fafc;
+        color: var(--text);
+        outline: none;
+      }
+
+      /* Tooltip */
+      .tooltip {
+        position: fixed;
+        background: #0f172a;
+        color: #fff;
+        padding: 8px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+        pointer-events: none;
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.15s;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+      .tooltip.show { opacity: 1; }
+
+      .stock-bar-wrap {
+        width: 60px;
+        height: 6px;
+        background: #e2e8f0;
+        border-radius: 99px;
+        overflow: hidden;
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 6px;
+      }
+      .stock-bar-fill { height: 100%; border-radius: 99px; }
+
+      .tcard {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .tcard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 14px;
+        border-bottom: 1px solid var(--border);
+        background: #fbfdff;
+        flex-wrap: wrap;
+      }
+      .tcard-header h3 { margin: 0; font-size: 13px; font-weight: 700; }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <img src="BAC.png" alt="Clinic Logo" />
+          <div>
+            <h1>Balagtas Animal Clinic</h1>
+            <p>Staff Dashboard</p>
+          </div>
+        </div>
+        <nav class="nav">
+          <a href="staffdb.html"><div class="ico">▦</div>Dashboard</a>
+          <a href="patientque.html"><div class="ico">👥</div>Patient Queue</a>
+          <a href="appointments.html"><div class="ico">📅</div>Appointments</a>
+          <a href="patientrecords.html"><div class="ico">📋</div>Medical Records</a>
+          <a class="active" href="inventorystaff.html"><div class="ico">⧉</div>Inventory</a>
+          <a href="#"><div class="ico">💬</div>Messages</a>
+          <div class="section">System</div>
+          <a href="auth.html" id="sign-out"><div class="ico">↩</div>Sign out</a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="crumb">Home / Staff Inventory</div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <button class="iconbtn" title="Notifications">🔔</button>
+            <div class="avatar" title="User"></div>
+          </div>
+        </header>
+
+        <section class="content">
+          <div class="headerRow">
+            <div>
+              <h2>Inventory</h2>
+              <div class="sub">View medicines, supplies, and stock levels.</div>
+            </div>
+            <div class="actions">
+              <span class="btn" onclick="exportCSV()">Export CSV</span>
+              <span class="btn" onclick="openReorderModal()">🔄 Reorder List</span>
+            </div>
+          </div>
+
+          <!-- Alert banners -->
+          <div class="alert-banner">
+            <span style="font-size:16px;">🚨</span>
+            <strong>Inventory status pending</strong> — data will appear when inventory sync is ready.
+          </div>
+
+          <!-- KPI Cards -->
+          <div class="gridTop">
+            <div class="card">
+              <div class="cardHead">
+                <h3>Stock Summary</h3>
+                <span class="badge info">Live</span>
+              </div>
+              <div class="kpis">
+                <div class="kpi">
+                  <div class="t">Total Products</div>
+                  <div class="v" id="kpi-total">0</div>
+                  <div class="m">All items</div>
+                </div>
+                <div class="kpi">
+                  <div class="t">In Stock</div>
+                  <div class="v" id="kpi-instock">0</div>
+                  <div class="m">Ready to use</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="cardHead">
+                <h3>Status Overview</h3>
+                <span class="badge warn">Action</span>
+              </div>
+              <div class="kpis">
+                <div class="kpi">
+                  <div class="t">Low / Critical</div>
+                  <div class="v" id="kpi-lowcrit">0</div>
+                  <div class="m">Needs attention</div>
+                </div>
+                <div class="kpi">
+                  <div class="t">Expiring Soon</div>
+                  <div class="v" id="kpi-expiring">0</div>
+                  <div class="m">Within 30 days</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filters -->
+          <div class="filters">
+            <div class="filter-search">
+              <span style="font-size:14px;color:var(--muted2);">⌕</span>
+              <input id="tableSearch" placeholder="Search product name, category, supplier…" oninput="filterTable()" />
+            </div>
+            <select class="fsel" id="catFilter" onchange="filterTable()">
+              <option value="">All categories</option>
+              <option value="Herbal">Herbal</option>
+              <option value="Supplement">Supplement</option>
+              <option value="Antibiotic">Antibiotic</option>
+              <option value="Vaccine">Vaccine</option>
+              <option value="Antiparasitic">Antiparasitic</option>
+            </select>
+            <select class="fsel" id="statusFilter" onchange="filterTable()">
+              <option value="">All statuses</option>
+              <option value="In Stock">In Stock</option>
+              <option value="Low">Low</option>
+              <option value="Critical">Critical</option>
+              <option value="Out of Stock">Out of Stock</option>
+            </select>
+            <div class="tab-group">
+              <button class="active" onclick="setView('all',this)">All</button>
+              <button onclick="setView('low',this)">Low Stock</button>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="tcard">
+            <div class="tcard-header">
+              <h3>Stock List</h3>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <span class="badge info" id="rowCount">0 items</span>
+              </div>
+            </div>
+            <div style="overflow-x:auto;">
+              <table>
+                <thead>
+                  <tr>
+                    <th onclick="sortBy('name')">Product ⇅</th>
+                    <th onclick="sortBy('category')">Category ⇅</th>
+                    <th onclick="sortBy('qty')">Qty ⇅</th>
+                    <th>Unit</th>
+                    <th onclick="sortBy('price')">Unit Price ⇅</th>
+                    <th>Reorder At</th>
+                    <th onclick="sortBy('supplier')">Supplier ⇅</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+              </table>
+            </div>
+            <div class="pagination">
+              <div class="pg-info" id="pgInfo">Showing 0 of 0</div>
+              <div class="pg-btns" id="pgBtns"></div>
+            </div>
+          </div>
+
+        </section>
+      </main>
+    </div>
+
+    <!-- Item Detail Modal -->
+    <div class="overlay" id="detailOverlay" onclick="closeDetail(event)">
+      <div class="modal">
+        <div class="modal-header">
+          <h3 id="detailTitle">Item Details</h3>
+          <div class="close-btn" onclick="document.getElementById('detailOverlay').classList.remove('open')">✕</div>
+        </div>
+        <div class="modal-body" id="detailBody"></div>
+        <div class="modal-footer">
+          <span class="btn" onclick="document.getElementById('detailOverlay').classList.remove('open')">Close</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reorder Modal -->
+    <div class="overlay" id="reorderOverlay" onclick="closeReorder(event)">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>Reorder List</h3>
+          <div class="close-btn" onclick="document.getElementById('reorderOverlay').classList.remove('open')">✕</div>
+        </div>
+        <div class="modal-body">
+          <p style="font-size:13px;color:var(--muted2);margin:0 0 12px;">Items at or below reorder threshold that need restocking:</p>
+          <div id="reorderList"></div>
+        </div>
+        <div class="modal-footer">
+          <span class="btn" onclick="document.getElementById('reorderOverlay').classList.remove('open')">Close</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+    <script>
+      let ITEMS = [];
+      let filtered = [];
+      let currentPage = 1;
+      const perPage = 11;
+      let sortKey = null;
+      let sortAsc = true;
+      let viewMode = 'all';
+
+      async function loadCSV() {
+        ITEMS = [];
+        filtered = [];
+        updateKPI();
+        renderTable();
+      }
+
+      function getStatus(item) {
+        if (item.qty === 0) {
+          return { label: 'Out of Stock', cls: 'bad' };
+        }
+        if (item.qty <= 10) {
+          return { label: 'Critical', cls: 'bad' };
+        }
+        if (item.qty <= 30) {
+          return { label: 'Low', cls: 'warn' };
+        }
+        return { label: 'In Stock', cls: 'good' };
+      }
+
+      function updateKPI() {
+        const totalProducts = ITEMS.length;
+        const inStock = ITEMS.filter(i => getStatus(i).cls === 'good').length;
+        const lowStock = ITEMS.filter(i => getStatus(i).cls === 'warn').length;
+        const critical = ITEMS.filter(i => getStatus(i).cls === 'bad').length;
+
+        document.getElementById('kpi-total').textContent = totalProducts;
+        document.getElementById('kpi-instock').textContent = inStock;
+        document.getElementById('kpi-lowcrit').textContent = lowStock + critical;
+      }
+
+      function setView(v, btn) {
+        viewMode = v;
+        document.querySelectorAll('.tab-group button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        filterTable();
+      }
+
+      function filterTable() {
+        const q = (document.getElementById('tableSearch').value || '').toLowerCase();
+        const cat = document.getElementById('catFilter').value;
+        const st = document.getElementById('statusFilter').value;
+
+        filtered = ITEMS.filter(i => {
+          const matchQ = !q || i.name.toLowerCase().includes(q) || i.category.toLowerCase().includes(q);
+          const matchCat = !cat || i.category === cat;
+          const matchSt = !st || getStatus(i).label === st;
+          const matchV = viewMode === 'all' ? true : viewMode === 'low' ? (getStatus(i).cls === 'warn' || getStatus(i).cls === 'bad') : false;
+          return matchQ && matchCat && matchSt && matchV;
+        });
+
+        currentPage = 1;
+        renderTable();
+      }
+
+      function sortBy(key) {
+        if (sortKey === key) {
+          sortAsc = !sortAsc;
+        } else {
+          sortKey = key;
+          sortAsc = true;
+        }
+
+        filtered.sort((a, b) => {
+          let va = key === 'qty' ? a.qty : (a[key] || '');
+          let vb = key === 'qty' ? b.qty : (b[key] || '');
+
+          if (typeof va === 'number') {
+            return sortAsc ? va - vb : vb - va;
+          }
+          return sortAsc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
+        });
+
+        renderTable();
+      }
+
+      function renderTable() {
+        const start = (currentPage - 1) * perPage;
+        const page = filtered.slice(start, start + perPage);
+
+        document.getElementById('rowCount').textContent = filtered.length + ' items';
+
+        document.getElementById('tableBody').innerHTML = page.map(item => {
+          const st = getStatus(item);
+          return `
+            <tr onclick="openDetail('${item.id}')">
+              <td>
+                <strong>${item.name}</strong><br>
+                <span style="font-size:11px;color:var(--muted2);">${item.id}</span>
+              </td>
+              <td><span class="badge info">${item.category}</span></td>
+              <td class="mono">${item.qty}</td>
+              <td>${item.unit}</td>
+              <td class="mono">₱${item.price}</td>
+              <td class="mono">${item.reorder}</td>
+              <td style="font-size:12px;">${item.classification}</td>
+              <td><span class="badge ${st.cls}">${st.label}</span></td>
+            </tr>
+          `;
+        }).join('');
+
+        renderPagination();
+      }
+
+      function renderPagination() {
+        const total = filtered.length;
+        const pages = Math.ceil(total / perPage);
+        const start = total === 0 ? 0 : (currentPage - 1) * perPage + 1;
+        const end = Math.min(currentPage * perPage, total);
+
+        document.getElementById('pgInfo').textContent = `Showing ${start}–${end} of ${total}`;
+
+        let btns = `
+          <button class="pg-btn" onclick="goPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>‹</button>
+        `;
+
+        for (let i = 1; i <= pages; i++) {
+          btns += `
+            <button class="pg-btn ${i === currentPage ? 'active' : ''}" onclick="goPage(${i})">${i}</button>
+          `;
+        }
+
+        btns += `
+          <button class="pg-btn" onclick="goPage(${currentPage + 1})" ${currentPage === pages ? 'disabled' : ''}>›</button>
+        `;
+
+        document.getElementById('pgBtns').innerHTML = btns;
+      }
+
+      function goPage(p) {
+        const pages = Math.ceil(filtered.length / perPage);
+        if (p < 1 || p > pages) return;
+        currentPage = p;
+        renderTable();
+      }
+
+      function openDetail(id) {
+        const item = ITEMS.find(x => x.id === id);
+        if (!item) return;
+
+        const st = getStatus(item);
+
+        document.getElementById('detailTitle').textContent = item.name;
+        document.getElementById('detailBody').innerHTML = `
+          <div class="info-grid">
+            <div class="info-item">
+              <div class="info-label">Item ID</div>
+              <div class="info-value mono">${item.id}</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Classification</div>
+              <div class="info-value">${item.classification}</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Quantity</div>
+              <div class="info-value">${item.qty}</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Status</div>
+              <div class="info-value"><span class="badge ${st.cls}">${st.label}</span></div>
+            </div>
+          </div>
+        `;
+
+        document.getElementById('detailOverlay').classList.add('open');
+      }
+
+      function closeDetail(e) {
+        if (e.target === document.getElementById('detailOverlay')) {
+          document.getElementById('detailOverlay').classList.remove('open');
+        }
+      }
+
+      function openReorderModal() {
+        const needReorder = ITEMS.filter(i => getStatus(i).cls === 'warn' || getStatus(i).cls === 'bad');
+
+        document.getElementById('reorderList').innerHTML = needReorder.map(i => `
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:12px;background:#F8FAFC;border:1px solid var(--border);border-radius:10px;margin-bottom:8px;">
+            <div>
+              <div style="font-size:13px;font-weight:700;">${i.name}</div>
+              <div style="font-size:11px;color:var(--muted2);margin-top:2px;">${i.classification}</div>
+            </div>
+            <div><span class="badge bad">${i.qty}</span></div>
+          </div>
+        `).join('');
+
+        document.getElementById('reorderOverlay').classList.add('open');
+      }
+
+      function closeReorder(e) {
+        if (e.target === document.getElementById('reorderOverlay')) {
+          document.getElementById('reorderOverlay').classList.remove('open');
+        }
+      }
+
+      function exportCSV() {
+        const headers = ['Item', 'Quantity', 'Classification', 'Status'];
+        const rows = filtered.map(i => [
+          `"${i.name}"`,
+          i.qty,
+          i.classification,
+          getStatus(i).label
+        ].join(','));
+
+        const csv = [headers.join(','), ...rows].join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'inventory_export.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      document.getElementById('sign-out').addEventListener('click', function () {
+        sessionStorage.removeItem('bac_role');
+        sessionStorage.removeItem('bac_name');
+      });
+
+      loadCSV();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Balagtas Animal Clinic — Patient Queue</title>
+    <style>
+      :root {
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #0f172a;
+        --muted: #475569;
+        --muted2: #64748b;
+        --border: #e2e8f0;
+        --shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 8px 24px rgba(15, 23, 42, 0.06);
+        --primary: #0ea5a4;
+        --primary2: #0f766e;
+        --good: #22c55e;
+        --warn: #f59e0b;
+        --bad: #ef4444;
+        --info: #3b82f6;
+        --radius: 14px;
+      }
+      * { box-sizing: border-box; }
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
+          "Apple Color Emoji", "Segoe UI Emoji";
+        background: var(--bg);
+        color: var(--text);
+      }
+      .app { display: flex; min-height: 100vh; }
+
+      .sidebar {
+        width: 280px;
+        background: #fff;
+        border-right: 1px solid var(--border);
+        padding: 18px 14px;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+      }
+      .brand {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 10px 10px 18px 10px;
+      }
+      .brand img { width: 36px; height: 36px; border-radius: 10px; object-fit: cover; }
+      .brand h1 { font-size: 14px; margin: 0; line-height: 1.2; letter-spacing: 0.2px; }
+      .brand p { margin: 0; font-size: 12px; color: var(--muted2); }
+
+      .nav { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+      .nav a {
+        text-decoration: none;
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 10px;
+        border-radius: 12px;
+        border: 1px solid transparent;
+        cursor: pointer;
+      }
+      .nav a .ico {
+        width: 28px;
+        height: 28px;
+        border-radius: 10px;
+        display: grid;
+        place-items: center;
+        background: #f1f5f9;
+        color: #0f172a;
+        font-size: 13px;
+      }
+      .nav a.active {
+        background: #ecfeff;
+        color: #0f172a;
+        border-color: #bff7f6;
+        position: relative;
+      }
+      .nav a.active::before {
+        content: "";
+        position: absolute;
+        left: -14px;
+        top: 10px;
+        bottom: 10px;
+        width: 4px;
+        border-radius: 99px;
+        background: var(--primary);
+      }
+      .nav .section {
+        margin: 14px 10px 6px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+      }
+
+      .main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+      .topbar {
+        height: 64px;
+        background: #fff;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 22px;
+        gap: 16px;
+        position: sticky;
+        top: 0;
+        z-index: 2;
+      }
+      .crumb { font-size: 12px; color: var(--muted2); }
+      .pill {
+        height: 34px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 0 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #fff;
+        color: var(--muted);
+        font-size: 12px;
+        white-space: nowrap;
+      }
+      .iconbtn {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: #fff;
+        display: grid;
+        place-items: center;
+        color: var(--muted);
+        cursor: pointer;
+      }
+      .avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #a78bfa, #60a5fa);
+        border: 1px solid rgba(15, 23, 42, 0.08);
+      }
+
+      .content { padding: 22px; display: flex; flex-direction: column; gap: 14px; }
+      .headerRow {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        flex-wrap: wrap;
+        align-items: flex-end;
+      }
+      .headerRow h2 { margin: 0; font-size: 28px; letter-spacing: -0.02em; }
+      .headerRow .sub { margin: 6px 0 0; color: var(--muted2); font-size: 13px; }
+      .actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+      .btn {
+        height: 36px;
+        padding: 0 12px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: #fff;
+        color: var(--text);
+        font-size: 12.5px;
+        font-weight: 650;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        text-decoration: none;
+      }
+      .btn:hover { background: #f1f5f9; border-color: #cbd5e1; }
+      .btn.primary {
+        background: var(--primary);
+        border-color: rgba(14, 165, 164, 0.25);
+        color: #fff;
+        box-shadow: 0 10px 22px rgba(14, 165, 164, 0.18);
+      }
+      .btn.primary:hover { background: var(--primary2); }
+
+      .statRow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+      .detailRow { display: grid; grid-template-columns: 1.7fr 1.3fr; gap: 14px; }
+      .gridFull { display: grid; grid-template-columns: 1fr; gap: 14px; }
+      @media (max-width: 1100px) {
+        .sidebar { display: none; }
+        .statRow,
+        .detailRow { grid-template-columns: 1fr; }
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .cardHead {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--border);
+        background: #fbfdff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      }
+      .cardHead h3 { margin: 0; font-size: 14px; letter-spacing: 0.01em; }
+      .badge {
+        padding: 5px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        border: 1px solid var(--border);
+        background: #f8fafc;
+        color: var(--muted);
+      }
+      .badge.good { background: rgba(34, 197, 94, 0.12); border-color: rgba(34, 197, 94, 0.18); color: #166534; }
+      .badge.warn { background: rgba(245, 158, 11, 0.12); border-color: rgba(245, 158, 11, 0.22); color: #92400e; }
+      .badge.bad { background: rgba(239, 68, 68, 0.12); border-color: rgba(239, 68, 68, 0.22); color: #991b1b; }
+      .badge.info { background: rgba(59, 130, 246, 0.12); border-color: rgba(59, 130, 246, 0.18); color: #1d4ed8; }
+
+      .kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 16px; }
+      .kpi {
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 16px;
+        background: #fff;
+      }
+      .kpi .t { font-size: 12px; color: var(--muted2); font-weight: 700; text-transform: uppercase; }
+      .kpi .v { margin-top: 10px; font-size: 28px; font-weight: 800; letter-spacing: -0.03em; }
+      .kpi .m { margin-top: 10px; font-size: 12px; color: var(--muted2); }
+
+      .highlight-card {
+        display: grid;
+        gap: 12px;
+        padding: 20px;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+      }
+      .highlight-card h3 { margin: 0; font-size: 15px; }
+      .highlight-card p { margin: 0; color: var(--muted2); }
+      .highlight-card .value { font-size: 42px; font-weight: 900; line-height: 1; }
+      .highlight-card .subvalue { font-size: 13px; color: var(--muted2); }
+
+      .queue-list {
+        display: grid;
+        gap: 14px;
+        padding: 16px;
+      }
+      .queue-item {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 18px;
+        display: grid;
+        gap: 8px;
+      }
+      .queue-item header {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        align-items: center;
+      }
+      .queue-item h4 { margin: 0; font-size: 15px; }
+      .queue-item .meta { color: var(--muted2); font-size: 12px; }
+      .queue-item .status-pill {
+        display: inline-flex;
+        padding: 5px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        border: 1px solid var(--border);
+      }
+      .status-pill.waiting { color: #0f766e; background: rgba(14, 165, 164, 0.12); border-color: rgba(14, 165, 164, 0.18); }
+      .status-pill.inprogress { color: #ca8a04; background: rgba(245, 158, 11, 0.12); border-color: rgba(245, 158, 11, 0.18); }
+      .status-pill.complete { color: #166534; background: rgba(34, 197, 94, 0.12); border-color: rgba(34, 197, 94, 0.18); }
+      .status-pill.no-show { color: #991b1b; background: rgba(239, 68, 68, 0.12); border-color: rgba(239, 68, 68, 0.18); }
+
+      .details-panel {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .details-panel h3 { margin: 0; font-size: 15px; }
+      .details-panel .detail-row {
+        display: grid;
+        gap: 12px;
+      }
+      .details-panel .detail-box {
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 14px;
+      }
+      .details-panel .detail-box strong { display: block; margin-bottom: 6px; color: var(--text); }
+      .details-panel .detail-box span { display: block; color: var(--muted2); font-size: 13px; }
+      .details-panel .cta-btn {
+        margin-top: auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 42px;
+        border-radius: 12px;
+        border: none;
+        background: var(--primary);
+        color: #fff;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+
+      table { width: 100%; border-collapse: separate; border-spacing: 0; }
+      thead th {
+        text-align: left;
+        font-size: 11px;
+        color: #64748b;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--border);
+        background: #fff;
+      }
+      tbody td {
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--border);
+        font-size: 13px;
+        color: #0f172a;
+      }
+      tbody tr:hover td { background: #f0fdfa; }
+      .status { display: inline-flex; align-items: center; gap: 8px; }
+      .dot { width: 8px; height: 8px; border-radius: 99px; background: #cbd5e1; }
+      .dot.good { background: var(--good); }
+      .dot.warn { background: var(--warn); }
+      .dot.bad { background: var(--bad); }
+
+      .list { display: flex; flex-direction: column; }
+      .item {
+        display: flex;
+        gap: 12px;
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--border);
+        align-items: flex-start;
+      }
+      .item:last-child { border-bottom: none; }
+      .itemTitle { margin: 0; font-size: 13px; font-weight: 850; letter-spacing: -0.01em; }
+      .itemMeta { margin-top: 3px; font-size: 12px; color: var(--muted2); }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <img src="BAC.png" alt="Clinic Logo" />
+          <div>
+            <h1>Balagtas Animal Clinic</h1>
+            <p>Staff Dashboard</p>
+          </div>
+        </div>
+        <nav class="nav">
+          <a href="staffdb.html"><div class="ico">▦</div>Dashboard</a>
+          <a class="active" href="patientque.html"><div class="ico">👥</div>Patient Queue</a>
+          <a href="#"><div class="ico">📅</div>Appointments</a>
+          <a href="#"><div class="ico">📋</div>Medical Records</a>
+          <a href="inventory.html"><div class="ico">⧉</div>Inventory</a>
+          <a href="#"><div class="ico">💬</div>Messages</a>
+          <div class="section">System</div>
+          <a href="auth.html" id="sign-out"><div class="ico">↩</div>Sign out</a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="crumb">Home / Patient Queue</div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="pill" id="role-pill" title="Signed-in role" style="display:none">
+              <span id="role-icon">👨🏻‍💼</span>
+              <span id="role-label">Staff</span>
+            </div>
+            <button class="iconbtn" title="Notifications">🔔</button>
+            <div class="avatar" title="User"></div>
+          </div>
+        </header>
+
+        <section class="content">
+          <div class="headerRow">
+            <div>
+              <h2>Patient Queue</h2>
+              <div class="sub">Manage incoming patients, queue status, and urgent cases.</div>
+            </div>
+            <div class="actions">
+              <a class="btn primary" href="#" onclick="alert('Add patient action.'); return false;">Add Patient</a>
+              <a class="btn" href="#" onclick="alert('Refresh queue action.'); return false;">Refresh Queue</a>
+            </div>
+          </div>
+
+          <div class="statRow">
+            <div class="highlight-card">
+              <h3>Next Patient</h3>
+              <div class="value">—</div>
+              <p class="subvalue">The next case will appear here as patients check in.</p>
+            </div>
+            <div class="highlight-card">
+              <h3>Queue Load</h3>
+              <div class="value">—</div>
+              <p class="subvalue">Current number of active patients in the queue.</p>
+            </div>
+            <div class="highlight-card">
+              <h3>Doctor Status</h3>
+              <div class="value">—</div>
+              <p class="subvalue">Shows the current available or busy status.</p>
+            </div>
+          </div>
+
+          <div class="detailRow">
+            <div class="card">
+              <div class="cardHead">
+                <h3>Patient Queue List</h3>
+                <span class="badge info">Live</span>
+              </div>
+              <div class="queue-list">
+                <div class="queue-item">
+                  <header>
+                    <h4>No queued patients</h4>
+                    <span class="status-pill waiting">Waiting</span>
+                  </header>
+                  <div class="meta">Once patients arrive, their entry will show here.</div>
+                </div>
+              </div>
+            </div>
+
+            <aside class="details-panel">
+              <h3>Queue Actions</h3>
+              <div class="detail-row">
+                <div class="detail-box">
+                  <strong>Check-in patient</strong>
+                  <span>Add new patients to the queue quickly.</span>
+                </div>
+                <div class="detail-box">
+                  <strong>Manage status</strong>
+                  <span>Move patients from waiting to in progress or complete.</span>
+                </div>
+              </div>
+              <button class="cta-btn" onclick="alert('Action placeholder');">Create new check-in</button>
+            </aside>
+          </div>
+
+          <div class="gridFull">
+            <div class="card">
+              <div class="cardHead">
+                <h3>Service Notes</h3>
+                <span class="badge warn">Reminder</span>
+              </div>
+              <div style="padding: 18px; color: var(--muted2);">
+                <p style="margin: 0;">This panel is reserved for important queue reminders, critical service notes, or next-call guidance.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      (function () {
+        var role = sessionStorage.getItem("bac_role");
+        var name = sessionStorage.getItem("bac_name");
+        if (role !== "staff") return;
+        var pill = document.getElementById("role-pill");
+        var label = document.getElementById("role-label");
+        var icon = document.getElementById("role-icon");
+        if (pill && label && icon) {
+          pill.style.display = "inline-flex";
+          icon.textContent = "👨🏻‍💼";
+          label.textContent = name ? name + " · Staff" : "Staff";
+        }
+      })();
+
+      document.getElementById("sign-out").addEventListener("click", function () {
+        sessionStorage.removeItem("bac_role");
+        sessionStorage.removeItem("bac_name");
+      });
+    </script>
+  </body>
+</html>

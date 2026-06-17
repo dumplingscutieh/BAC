@@ -1,0 +1,10 @@
+.clinic-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  object-fit: contain;
+  background:#fff;
+  padding:6px;
+  border:2px solid #1E3A8A; /* deep blue to match logo */
+  box-shadow:0 4px 10px rgba(30,58,138,0.15);
+}

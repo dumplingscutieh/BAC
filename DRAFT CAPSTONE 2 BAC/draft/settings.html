@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Balagtas Animal Clinic — Settings</title>
+    <style>
+      :root{
+        --bg:#F8FAFC;
+        --card:#FFFFFF;
+        --text:#0F172A;
+        --muted:#475569;
+        --muted2:#64748B;
+        --border:#E2E8F0;
+        --shadow: 0 1px 2px rgba(15,23,42,.06), 0 8px 24px rgba(15,23,42,.06);
+        --primary:#0EA5A4;
+        --primary2:#0F766E;
+        --good:#22C55E;
+        --warn:#F59E0B;
+        --bad:#EF4444;
+        --info:#3B82F6;
+        --radius:14px;
+      }
+      *{box-sizing:border-box}
+      html,body{height:100%}
+      body{
+        margin:0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+        background:var(--bg);
+        color:var(--text);
+      }
+      .app{display:flex; min-height:100vh;}
+
+      /* Sidebar */
+      .sidebar{width:260px; background:#fff; border-right:1px solid var(--border); padding:18px 14px; position:sticky; top:0; height:100vh;}
+      .brand{display:flex; gap:10px; align-items:center; padding:10px 10px 18px 10px;}
+      .logo{width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg, var(--primary), #22C1C3); box-shadow:0 10px 22px rgba(14,165,164,.25); display:grid; place-items:center; color:#fff; font-weight:800;}
+      .brand h1{font-size:14px; margin:0; line-height:1.2;}
+      .brand p{margin:0; font-size:12px; color:var(--muted2)}
+      .nav{display:flex; flex-direction:column; gap:6px; margin-top:8px;}
+      .nav a{text-decoration:none; color:var(--muted); display:flex; align-items:center; gap:10px; padding:10px; border-radius:12px; border:1px solid transparent; cursor:pointer;}
+      .nav a .ico{width:28px; height:28px; border-radius:10px; display:grid; place-items:center; background:#F1F5F9; color:#0F172A; font-size:13px;}
+      .nav a.active{background:#ECFEFF; color:#0F172A; border-color:#BFF7F6; position:relative;}
+      .nav a.active::before{content:""; position:absolute; left:-14px; top:10px; bottom:10px; width:4px; border-radius:99px; background:var(--primary);}      
+
+      /* Main */
+      .main{flex:1; display:flex; flex-direction:column; min-width:0;}
+      .topbar{height:64px; background:#fff; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 22px; gap:16px; position:sticky; top:0; z-index:2;}
+      .crumb{font-size:12px; color:var(--muted2);}
+      .search{flex:1; display:flex; justify-content:center;}
+      .search .box{width:min(680px,100%); height:40px; border:1px solid var(--border); border-radius:12px; display:flex; align-items:center; padding:0 12px; gap:10px; color:var(--muted2); background:#fff;}
+      .search input{border:none; outline:none; flex:1; font-size:13px; background:transparent;}
+      .right{display:flex; align-items:center; gap:10px; min-width:220px; justify-content:flex-end;}
+      .pill{height:34px; border:1px solid var(--border); border-radius:999px; padding:0 12px; display:flex; align-items:center; gap:8px; background:#fff; color:var(--muted); font-size:12px; white-space:nowrap; text-decoration:none;}
+      .iconbtn{width:36px; height:36px; border-radius:12px; border:1px solid var(--border); background:#fff; display:grid; place-items:center; color:var(--muted); cursor:pointer;}
+      .avatar{width:36px; height:36px; border-radius:12px; background:linear-gradient(135deg,#A78BFA,#60A5FA); border:1px solid rgba(15,23,42,.08); cursor:pointer;}
+
+      /* Content */
+      .content{padding:22px; display:flex; flex-direction:column; gap:16px;}
+      .headerRow{display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; align-items:flex-end;}
+      .headerRow h2{margin:0; font-size:28px; letter-spacing:-.02em;}
+      .headerRow .sub{margin:6px 0 0; color:var(--muted2); font-size:13px;}
+      .actions{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+      .btn{height:36px; padding:0 12px; border-radius:12px; border:1px solid var(--border); background:#fff; color:var(--text); font-size:12.5px; font-weight:650; display:inline-flex; align-items:center; gap:8px; cursor:pointer; transition:all .15s;}
+      .btn.primary{background:var(--primary); border-color:rgba(14,165,164,.25); color:#fff; box-shadow:0 10px 22px rgba(14,165,164,.18);}      
+
+      .card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden;}
+      .cardPad{padding:16px;}
+      .form-row{display:flex; gap:12px; align-items:center;}
+      .col{flex:1}
+      label{display:block; font-size:12px; color:var(--muted2); font-weight:700; margin-bottom:6px;}
+      input[type="text"], input[type="email"], select{width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:#fff; font-size:13px;}
+      .switch{display:inline-flex; align-items:center; gap:8px;}
+      .switch input{display:none}
+      .switch .track{width:44px; height:24px; background:#E6EEF0; border-radius:999px; position:relative; transition:all .15s;}
+      .knob{width:18px; height:18px; background:#fff; border-radius:50%; position:absolute; top:3px; left:3px; box-shadow:0 4px 12px rgba(2,6,23,.08); transition:all .15s}
+      .switch input:checked + .track{background:var(--primary)}
+      .switch input:checked + .track .knob{left:23px}
+
+      .small{font-size:13px; color:var(--muted2)}
+      .grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+      @media(max-width:900px){.grid2{grid-template-columns:1fr}}
+
+    </style>
+  </head>
+  <body>
+    <div class="app">
+
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="brand">
+         <img src="BAC.png" class="clinic-logo" alt="Clinic Logo" />
+          <div>
+            <h1>Balagtas Animal Clinic</h1>
+            <p>Operations Dashboard</p>
+          </div>
+        </div>
+        <nav class="nav">
+          <a href="admindb.html"><div class="ico">▦</div>Dashboard</a>
+          <a href="pos.html"><div class="ico">₱</div>POS</a>
+          <a href="inventory.html"><div class="ico">⧉</div>Inventory</a>
+          <a href="patientrecords.html"><div class="ico">🐾</div>Patient Records</a>
+          <a href="report.html"><div class="ico">📈</div>Reports</a>
+          <a href="alert.html"><div class="ico">⏰</div>Alerts</a>
+          <a class="active" href="settings.html"><div class="ico">⚙</div>Settings</a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <!-- Topbar -->
+        <header class="topbar">
+          <div class="left">
+            <div class="crumb">Home / Settings</div>
+          </div>
+          <div class="search">
+            <div class="box">
+              <span style="font-size:14px;">⌕</span>
+              <input placeholder="Search settings…" />
+            </div>
+          </div>
+          <div class="right">
+            <a class="pill" href="auth.html" style="text-decoration:none;color:inherit"><span>↩</span><span>Sign out</span></a>
+            <div class="pill calendar-pill" id="datePill"><span>📅</span><span class="dateText"></span><span style="opacity:.75">▾</span></div>
+            <button class="iconbtn">🔔</button>
+            <div class="avatar"></div>
+          </div>
+        </header>
+
+        <section class="content">
+
+          <div class="headerRow">
+            <div>
+              <h2>Settings</h2>
+              <div class="sub">Configure clinic information, notifications, and user preferences.</div>
+            </div>
+            <div class="actions">
+              <button class="btn" onclick="resetDefaults()">Reset</button>
+              <button class="btn primary" onclick="saveSettings()">Save Changes</button>
+            </div>
+          </div>
+
+          <div class="grid2">
+            <div class="card">
+              <div class="cardPad">
+                <h3 style="margin:0 0 10px 0;">Clinic Information</h3>
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                  <div>
+                    <label>Clinic Name</label>
+                    <input id="clinicName" type="text" placeholder="Balagtas Animal Clinic" />
+                  </div>
+                  <div>
+                    <label>Email</label>
+                    <input id="clinicEmail" type="email" placeholder="clinic@example.com" />
+                  </div>
+                  <div>
+                    <label>Phone</label>
+                    <input id="clinicPhone" type="text" placeholder="(02) 1234-5678" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="cardPad">
+                <h3 style="margin:0 0 10px 0;">Notifications</h3>
+                <div style="display:flex;flex-direction:column;gap:12px;">
+                  <label class="switch small"><input id="notifEmail" type="checkbox" /><span class="track"><span class="knob"></span></span> Email alerts</label>
+                  <label class="switch small"><input id="notifSMS" type="checkbox" /><span class="track"><span class="knob"></span></span> SMS alerts</label>
+                  <label class="switch small"><input id="notifPush" type="checkbox" /><span class="track"><span class="knob"></span></span> Desktop push</label>
+                  <div class="small">Changes are saved locally in the browser for this demo.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="cardPad">
+              <h3 style="margin:0 0 10px 0;">User Management</h3>
+              <div style="display:flex;flex-direction:column;gap:10px;">
+                <div style="display:flex;gap:8px;align-items:center;">
+                  <input id="newUserName" type="text" placeholder="New user name" style="flex:1" />
+                  <button class="btn" onclick="addUser()">Add</button>
+                </div>
+                <div id="userList" style="display:flex;flex-direction:column;gap:8px;margin-top:6px;"></div>
+              </div>
+            </div>
+          </div>
+
+        </section>
+      </main>
+    </div>
+
+    <script>
+      // Local demo persistence
+      function $(id){return document.getElementById(id)}
+      function loadSettings(){
+        const s = JSON.parse(localStorage.getItem('clinic:settings')||'{}');
+        $('clinicName').value = s.name||'Balagtas Animal Clinic';
+        $('clinicEmail').value = s.email||'';
+        $('clinicPhone').value = s.phone||'';
+        $('notifEmail').checked = !!s.notifEmail;
+        $('notifSMS').checked = !!s.notifSMS;
+        $('notifPush').checked = !!s.notifPush;
+        renderUsers(s.users||[]);
+      }
+      function saveSettings(){
+        const s = {name:$('clinicName').value,email:$('clinicEmail').value,phone:$('clinicPhone').value,notifEmail:$('notifEmail').checked,notifSMS:$('notifSMS').checked,notifPush:$('notifPush').checked,users:getUsers()};
+        localStorage.setItem('clinic:settings',JSON.stringify(s));
+        const btn = event?.target; if(btn){btn.textContent='Saved'; setTimeout(()=>btn.textContent='Save Changes',1200)}
+      }
+      function resetDefaults(){
+        localStorage.removeItem('clinic:settings'); loadSettings();
+      }
+      function addUser(){
+        const name = $('newUserName').value.trim(); if(!name) return; const users = JSON.parse(localStorage.getItem('clinic:settings')||'{}').users||[]; users.push({name,role:'Staff'}); const s = Object.assign(JSON.parse(localStorage.getItem('clinic:settings')||'{}'),{users}); localStorage.setItem('clinic:settings',JSON.stringify(s)); $('newUserName').value=''; renderUsers(users);
+      }
+      function renderUsers(users){
+        const el = $('userList'); el.innerHTML=''; users.forEach((u,idx)=>{
+          const row = document.createElement('div'); row.style.display='flex'; row.style.justifyContent='space-between'; row.style.alignItems='center';
+          row.innerHTML = `<div style="display:flex;flex-direction:column;"><strong>${u.name}</strong><span style="font-size:12px;color:var(--muted2)">${u.role||'Staff'}</span></div><div style="display:flex;gap:8px"><button class='btn' onclick='removeUser(${idx})'>Remove</button></div>`;
+          el.appendChild(row);
+        })
+      }
+      function getUsers(){
+        const el = $('userList'); const rows = Array.from(el.children); return rows.map(r=>({name:r.querySelector('strong').textContent,role:'Staff'}));
+      }
+      function removeUser(i){const s = JSON.parse(localStorage.getItem('clinic:settings')||'{}'); if(!s.users) return; s.users.splice(i,1); localStorage.setItem('clinic:settings',JSON.stringify(s)); renderUsers(s.users);}      
+      loadSettings();
+    </script>
+  </body>
+</html>
